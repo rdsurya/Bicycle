@@ -6,7 +6,7 @@
 		header("Location: home.php");
 	}
 ?>
--->
+
 <!DOCTYPE html>
 <html>
 <head>
