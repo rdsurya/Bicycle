@@ -2,7 +2,7 @@
 session_start();
 require '../../class/connect2.php';
 
-$isComplete = ( isset($_POST['name']) && isset($_POST['email']) && isset($_POST['level']) && isset($_POST['status']) );
+$isComplete = ( isset($_POST['name']) && isset($_POST['email']) && isset($_POST['address']) && isset($_POST['matric']) && isset($_POST['phone']));
 
 $reply = new stdClass();
 $reply->valid=false;
@@ -12,16 +12,16 @@ if($isComplete){
     
     $name = mysqli_real_escape_string($con,$_POST['name'] );
     $email = mysqli_real_escape_string($con,$_POST['email'] );
-    $level = $_POST['level'];
-    $status = $_POST['status'];
-    $pwd = mysqli_real_escape_string($con, md5("abc123"));
-    
-    $query = "Insert into user(name, email, password, user_level, status) "
-            . "Values('$name', '$email', '$pwd', $level, '$status');";
+    $address = mysqli_real_escape_string($con,$_POST['address'] );
+    $phone = $_POST['phone'];
+    $matric = $_POST['matric'];
+        
+    $query = "Insert into customer(name, email, phone, address, matric) "
+            . "Values('$name', '$email', '$phone', '$address', '$matric');";
     
     if(mysqli_query($con, $query)){
         $reply->valid=true;
-        $reply->msg="Success adding new staff";
+        $reply->msg="Success adding new customer";
     }
     else{
         $reply->valid=false;

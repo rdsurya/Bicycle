@@ -9,6 +9,17 @@ if (!isset($_SESSION["email"])) {
 <html>
     <head>
         <title>Bike Shop a Ecommerce Category Flat Bootstarp Responsive Website Template| Home :: w3layouts</title>
+        
+        <!--favicon-->
+        <link rel="apple-touch-icon" sizes="180x180" href="../assets/favicon.ico/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon.ico/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="../assets/favicon.ico/favicon-16x16.png">
+        <link rel="manifest" href="../assets/favicon.ico/manifest.json">
+        <link rel="mask-icon" href="../assets/favicon.ico/safari-pinned-tab.svg" color="#5bbad5">
+        <link rel="shortcut icon" href="../assets/favicon.ico/favicon.ico">
+        <meta name="msapplication-config" content="../assets/favicon.ico/browserconfig.xml">
+        <meta name="theme-color" content="#ffffff">
+        <!--favicon-->
 
         <!-- jQuery (Bootstrap's JavaScript plugins) -->
         <script src="../assets/js/jquery.min.js"></script>

@@ -7,6 +7,7 @@
         <li class="dropdown1"><a href="">MANAGE PEOPLE</a>
             <ul class="dropdown2">
                 <li><a href="../staff/main.php">STAFF</a></li>
+                <li><a href="../customer/main.php">CUSTOMER</a></li>
             </ul>
         </li>
         <li class="dropdown1"><a href="parts.html">PARTS</a>
