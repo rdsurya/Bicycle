@@ -88,9 +88,9 @@ if (!isset($_SESSION["email"])) {
             <div class="container" style="background: white; width: 85%;">
                 <div class="row" style="padding: 10px;">
                     <h3 style="padding: 5px;">
-                        Manage Customer
+                        Manage Bicycle
                         <span class="pull-right">
-                            <button class="btn btn-primary" id="btnAddModal"><i class="fa fa-plus-circle"></i> New Customer</button>
+                            <button class="btn btn-primary" id="btnAddModal"><i class="fa fa-plus-circle"></i> New Bicycle</button>
                         </span>
                     </h3>
                     <div class="table-responsive" id="tableDiv"></div>
@@ -118,57 +118,52 @@ if (!isset($_SESSION["email"])) {
         <!---->
 
         <!-- Add Modal Start -->
-        <div class="modal fade" id="customerModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+        <div class="modal fade" id="bicycleModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal"><i class="fa fa-times fa-lg"></i></button>
-                        <h3 class="modal-title"><i class="fa fa-address-card"></i> Customer Information</h3>
+                        <h3 class="modal-title"><i class="fa fa-bicycle"></i> Bicycle Information</h3>
                     </div>
                     <div class="modal-body">
 
                         <!-- content goes here -->
-                        <form class="form-horizontal" id="customerForm">
+                        <form class="form-horizontal" id="bicycleForm">
                             <input type="hidden" id="s_modalID">
 
                             <!-- Text input-->
                             <div class="form-group">
-                                <label class="col-md-4 control-label" for="passwordinput">Matric No</label>
+                                <label class="col-md-4 control-label" for="passwordinput">Bicycle No</label>
                                 <div class="col-md-6">
-                                    <input id="s_matric" name="nPwd" type="text" placeholder="Enter customer matric number" class="form-control input-md" required maxlength="10">
+                                    <input id="s_byID" name="nPwd" type="text" placeholder="Enter bicycle matric number" class="form-control input-md" required maxlength="25">
                                 </div>
                             </div>
 
                             <!-- Text input-->
                             <div class="form-group">
-                                <label class="col-md-4 control-label" for="textinput">Name</label>  
+                                <label class="col-md-4 control-label" for="textinput">Type</label>  
                                 <div class="col-md-6">
-                                    <input id="s_name" name="name" type="text" placeholder="Enter customer name" class="form-control input-md" required maxlength="50">
+                                    <input id="s_type" name="name" type="text" placeholder="Enter bicycle name" class="form-control input-md" required maxlength="25">
 
                                 </div>
                             </div>
 
                             <!-- Password input-->
                             <div class="form-group">
-                                <label class="col-md-4 control-label" for="passwordinput">Email</label>
+                                <label class="col-md-4 control-label" for="passwordinput">Model</label>
                                 <div class="col-md-6">
-                                    <input id="s_email" name="nPwd" type="email" placeholder="Enter customer email" class="form-control input-md" required maxlength="50">
+                                    <input id="s_model" name="nPwd" type="text" placeholder="Enter bicycle email" class="form-control input-md" required maxlength="25">
                                 </div>
                             </div>
 
-                            <!-- Text input-->
+                            <!-- Select Basic -->
                             <div class="form-group">
-                                <label class="col-md-4 control-label" for="passwordinput">Telephone No</label>
-                                <div class="col-md-6">
-                                    <input id="s_phone" pattern="[0-9+-]{6,}" type="tel" placeholder="Enter customer phone number" class="form-control input-md" required maxlength="15">
-                                </div>
-                            </div>
-
-                            <!-- Password input-->
-                            <div class="form-group">
-                                <label class="col-md-4 control-label" for="passwordinput">Address</label>
-                                <div class="col-md-6">
-                                    <textarea id="s_address" name="nPwd" placeholder="Enter customer address" class="form-control input-md" required maxlength="90"></textarea>
+                                <label class="col-md-4 control-label" for="selectbasic">Status</label>
+                                <div class="col-md-4">
+                                    <select id="s_status" name="selectbasic" class="form-control">
+                                        <option value="Available">Available</option>
+                                        <option value="Occupied">Occupied</option>
+                                    </select>
                                 </div>
                             </div>
 
@@ -214,33 +209,32 @@ if (!isset($_SESSION["email"])) {
                                     });
 
                                     $('#btnAddModal').on('click', function () {
-                                        $('#customerModal').modal('show');
+                                        $('#bicycleModal').modal('show');
                                         $('.update_save_btn').hide();
                                         $('#s_divSave').show();
                                     });
 
                                     $('#btnSaveStaff').on('click', function () {
-                                        if (!$('#customerForm')[0].checkValidity()) {
-                                            $('<input type="submit">').hide().appendTo('#customerForm').click().remove();
+                                        if (!$('#bicycleForm')[0].checkValidity()) {
+                                            $('<input type="submit">').hide().appendTo('#bicycleForm').click().remove();
                                         } else {
                                             var data = {
-                                                name: $('#s_name').val(),
-                                                email: $('#s_email').val(),
-                                                phone: $('#s_phone').val(),
-                                                address: $('#s_address').val(),
-                                                matric: $('#s_matric').val()
+                                                bicycleID: $('#s_byID').val(),
+                                                type: $('#s_type').val(),
+                                                model: $('#s_model').val(),
+                                                status: $('#s_status').val()
                                             };
 
                                             $.ajax({
                                                 type: 'POST',
-                                                url: "control/insertCustomer.php",
+                                                url: "control/insertBicycle.php",
                                                 data: data,
                                                 dataType: 'json',
                                                 timeout: 60000,
                                                 success: function (data, textStatus, jqXHR) {
                                                     if (data.valid) {
                                                         alert(data.msg);
-                                                        $('#customerModal').modal('hide');
+                                                        $('#bicycleModal').modal('hide');
                                                         s_clear();
                                                         loadStaff();
                                                     } else {
@@ -257,7 +251,7 @@ if (!isset($_SESSION["email"])) {
                                     function loadStaff() {
                                         $.ajax({
                                             type: 'POST',
-                                            url: "control/tableCustomer.php",
+                                            url: "control/tableBicycle.php",
                                             timeout: 60000,
                                             success: function (data, textStatus, jqXHR) {
                                                 $('#tableDiv').html(data);
@@ -269,7 +263,7 @@ if (!isset($_SESSION["email"])) {
                                     }
 
                                     function s_clear() {
-                                        $('#customerForm')[0].reset();
+                                        $('#bicycleForm')[0].reset();
                                     }
 
                                     $('#tableDiv').on('click', '#s_btnUpdateModal', function () {
@@ -278,41 +272,39 @@ if (!isset($_SESSION["email"])) {
                                         var hiden = $(this).closest('td').find('#s_obj').val();
                                         var obj = JSON.parse(hiden);
 
-                                        $('#s_modalID').val(obj.matric);
-                                        $('#s_name').val(obj.name);
-                                        $('#s_email').val(obj.email);
-                                        $('#s_phone').val(obj.phone);
-                                        $('#s_address').val(obj.address);
-                                        $('#s_matric').val(obj.matric);
+                                        $('#s_modalID').val(obj.bicycleID);
+                                        $('#s_type').val(obj.type);
+                                        $('#s_model').val(obj.model);
+                                        $('#s_status').val(obj.status);
+                                        $('#s_byID').val(obj.bicycleID);
 
-                                        $('#customerModal').modal('show');
+                                        $('#bicycleModal').modal('show');
 
 
                                     });
 
                                     $('#btnUpdateStaff').on('click', function () {
-                                        if (!$('#customerForm')[0].checkValidity()) {
-                                            $('<input type="submit">').hide().appendTo('#customerForm').click().remove();
+                                        if (!$('#bicycleForm')[0].checkValidity()) {
+                                            $('<input type="submit">').hide().appendTo('#bicycleForm').click().remove();
                                         } else {
                                             var data = {
-                                                name: $('#s_name').val(),
-                                                email: $('#s_email').val(),
-                                                phone: $('#s_phone').val(),
-                                                address: $('#s_address').val(),
-                                                matric: $('#s_matric').val(),
-                                                id: $('#s_modalID').val()
+                                                bicycleID: $('#s_byID').val(),
+                                                type: $('#s_type').val(),
+                                                model: $('#s_model').val(),
+                                                status: $('#s_status').val(),
+                                                id: $('#s_byID').val()
                                             };
 
                                             $.ajax({
                                                 type: 'POST',
-                                                url: "control/updateCustomer.php",
+                                                url: "control/updateBicycle.php",
                                                 data: data,
                                                 dataType: 'json',
                                                 timeout: 60000,
                                                 success: function (data, textStatus, jqXHR) {
                                                     if (data.valid) {
                                                         alert(data.msg);
-                                                        $('#customerModal').modal('hide');
+                                                        $('#bicycleModal').modal('hide');
                                                         s_clear();
                                                         loadStaff();
                                                     } else {
@@ -330,16 +322,16 @@ if (!isset($_SESSION["email"])) {
                                         var hiden = $(this).closest('td').find('#s_obj').val();
                                         var obj = JSON.parse(hiden);
 
-                                        var yes = confirm("Are you sure you want to delete customer " + obj.name);
+                                        var yes = confirm("Are you sure you want to delete bicycle " + obj.bicycleID+", model "+obj.model+"?");
 
                                         if (yes) {
                                             var data = {
-                                                id: obj.matric
+                                                id: obj.bicycleID
                                             };
 
                                             $.ajax({
                                                 type: 'POST',
-                                                url: "control/deleteCustomer.php",
+                                                url: "control/deleteBicycle.php",
                                                 data: data,
                                                 dataType: 'json',
                                                 timeout: 60000,

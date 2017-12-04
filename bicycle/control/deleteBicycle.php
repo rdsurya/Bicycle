@@ -12,11 +12,11 @@ if($isComplete){
     
    $id = $_POST['id'];
     
-    $query = "Delete from customer where matric='$id' ;";
+    $query = "Delete from bicycle where bicycleID='$id' ;";
     
     if(mysqli_query($con, $query)){
         $reply->valid=true;
-        $reply->msg="Customer information is deleted.";
+        $reply->msg="Bicycle information is deleted.";
     }
     else{
         $reply->valid=false;

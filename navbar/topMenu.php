@@ -10,12 +10,9 @@
                 <li><a href="../customer/main.php">CUSTOMER</a></li>
             </ul>
         </li>
-        <li class="dropdown1"><a href="parts.html">PARTS</a>
+        <li class="dropdown1"><a href="">ASSETS</a>
             <ul class="dropdown2">
-                <li><a href="parts.html">CHAINS</a></li>
-                <li><a href="parts.html">TUBES</a></li>
-                <li><a href="parts.html">TIRES</a></li>
-                <li><a href="parts.html">DISC BREAKS</a></li>
+                <li><a href="../bicycle/main.php">BICYCLE</a></li>
             </ul>
         </li>      
         <li class="dropdown1"><a href="">MANAGEMENT</a>
