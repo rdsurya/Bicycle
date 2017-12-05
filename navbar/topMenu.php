@@ -15,12 +15,10 @@
                 <li><a href="../bicycle/main.php">BICYCLE</a></li>
             </ul>
         </li>      
-        <li class="dropdown1"><a href="">MANAGEMENT</a>
+        <li class="dropdown1"><a href="">BOOKING</a>
             <ul class="dropdown2">
-                <li><a href="Registration.html">REGISTER</a></li>
-                <li><a href="Registration.html">BOOKING</a></li>
-                <li><a href="Registration.html">LIST</a></li>
-                <li><a href="Registration.html">JERSEYS</a></li>
+                <li><a href="../booking/main.php">MANAGE BOOKING</a></li>
+                <li><a href="Registration.html">REPORT</a></li>
             </ul>
         </li>               
         <li class="dropdown1">

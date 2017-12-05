@@ -114,4 +114,6 @@ $result = mysqli_query($con, $sql);
     });
 
 </script>
-
+<?php
+        mysqli_close($con);
+?>
