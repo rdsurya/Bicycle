@@ -18,6 +18,7 @@
         <li class="dropdown1"><a href="">BOOKING</a>
             <ul class="dropdown2">
                 <li><a href="../booking/main.php">MANAGE BOOKING</a></li>
+                <li><a href="../package/main.php">PACKAGE</a></li>
                 <li><a href="Registration.html">REPORT</a></li>
             </ul>
         </li>               

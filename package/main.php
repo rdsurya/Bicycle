@@ -88,9 +88,9 @@ if (!isset($_SESSION["email"])) {
             <div class="container" style="background: white; width: 85%;">
                 <div class="row" style="padding: 10px;">
                     <h3 style="padding: 5px;">
-                        Manage Customer
+                        Manage Package
                         <span class="pull-right">
-                            <button class="btn btn-primary" id="btnAddModal"><i class="fa fa-plus-circle"></i> New Customer</button>
+                            <button class="btn btn-primary" id="btnAddModal"><i class="fa fa-plus-circle"></i> New Package</button>
                         </span>
                     </h3>
                     <div class="table-responsive" id="tableDiv"></div>
@@ -118,61 +118,63 @@ if (!isset($_SESSION["email"])) {
         <!---->
 
         <!-- Add Modal Start -->
-        <div class="modal fade" id="customerModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+        <div class="modal fade" id="packModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal"><i class="fa fa-times fa-lg"></i></button>
-                        <h3 class="modal-title"><i class="fa fa-address-card"></i> Customer Information</h3>
+                        <h3 class="modal-title"><i class="fa fa-product-hunt"></i> Package Information</h3>
                     </div>
                     <div class="modal-body">
 
                         <!-- content goes here -->
-                        <form class="form-horizontal" id="customerForm">
+                        <form class="form-horizontal" id="packForm">
                             <input type="hidden" id="s_modalID">
 
                             <!-- Text input-->
                             <div class="form-group">
-                                <label class="col-md-4 control-label" for="passwordinput">Matric No</label>
+                                <label class="col-md-4 control-label" for="passwordinput">Package Code</label>
                                 <div class="col-md-6">
-                                    <input id="s_matric" name="nPwd" type="text" placeholder="Enter customer matric number" class="form-control input-md" required maxlength="10">
+                                    <input id="pack_cd" type="text" placeholder="Enter package code number" class="form-control input-md" required maxlength="30">
                                 </div>
                             </div>
 
                             <!-- Text input-->
                             <div class="form-group">
-                                <label class="col-md-4 control-label" for="textinput">Name</label>  
+                                <label class="col-md-4 control-label" for="textinput">Package Name</label>  
                                 <div class="col-md-6">
-                                    <input id="s_name" name="name" type="text" placeholder="Enter customer name" class="form-control input-md" required maxlength="50">
+                                    <input id="pack_name" type="text" placeholder="Enter package name" class="form-control input-md" required maxlength="200">
 
                                 </div>
                             </div>
-
-                            <!-- Password input-->
+                            
+                            <!-- Text input-->
                             <div class="form-group">
-                                <label class="col-md-4 control-label" for="passwordinput">Email</label>
+                                <label class="col-md-4 control-label" for="textinput">Unit Days</label>  
                                 <div class="col-md-6">
-                                    <input id="s_email" name="nPwd" type="email" placeholder="Enter customer email" class="form-control input-md" required maxlength="50">
+                                    <input id="pack_days" type="number" placeholder="Enter unit of days for the package" class="form-control input-md" required min="1" max="999999999" step="1">
                                 </div>
                             </div>
 
                             <!-- Text input-->
                             <div class="form-group">
-                                <label class="col-md-4 control-label" for="passwordinput">Telephone No</label>
+                                <label class="col-md-4 control-label" for="passwordinput">Price (RM)</label>
                                 <div class="col-md-6">
-                                    <input id="s_phone" pattern="[0-9+-]{6,}" type="tel" placeholder="Enter customer phone number" class="form-control input-md" required maxlength="15">
+                                    <input id="pack_price" type="number" placeholder="Enter package price" class="form-control input-md" required max="9999.99" min="0" step="0.01">
                                 </div>
                             </div>
-
-                            <!-- Password input-->
+                            
+                            <!-- Select Basic -->
                             <div class="form-group">
-                                <label class="col-md-4 control-label" for="passwordinput">Address</label>
-                                <div class="col-md-6">
-                                    <textarea id="s_address" name="nPwd" placeholder="Enter customer address" class="form-control input-md" required maxlength="90"></textarea>
+                                <label class="col-md-4 control-label" for="selectbasic">Status</label>
+                                <div class="col-md-4">
+                                    <select id="pack_status" name="selectbasic" class="form-control">
+                                        <option value="Active">Active</option>
+                                        <option value="Inactive">Inactive</option>
+                                    </select>
                                 </div>
                             </div>
-
-
+                           
                         </form>
                         <div class="text-center">
                             <span class="update_save_btn" id="s_divSave">
@@ -214,34 +216,35 @@ if (!isset($_SESSION["email"])) {
                                     });
 
                                     $('#btnAddModal').on('click', function () {
-                                        $('#customerModal').modal('show');
+                                        $('#packModal').modal('show');
+                                        $('#pack_cd').prop("disabled", false);
                                         $('.update_save_btn').hide();
                                         $('#s_divSave').show();
                                         s_clear();
                                     });
 
                                     $('#btnSaveStaff').on('click', function () {
-                                        if (!$('#customerForm')[0].checkValidity()) {
-                                            $('<input type="submit">').hide().appendTo('#customerForm').click().remove();
+                                        if (!$('#packForm')[0].checkValidity()) {
+                                            $('<input type="submit">').hide().appendTo('#packForm').click().remove();
                                         } else {
                                             var data = {
-                                                name: $('#s_name').val(),
-                                                email: $('#s_email').val(),
-                                                phone: $('#s_phone').val(),
-                                                address: $('#s_address').val(),
-                                                matric: $('#s_matric').val()
+                                                pack_cd: $('#pack_cd').val(),
+                                                pack_name: $('#pack_name').val(),
+                                                pack_price: $('#pack_price').val(),
+                                                status: $('#pack_status').val(),
+                                                days: $('#pack_days').val()
                                             };
 
                                             $.ajax({
                                                 type: 'POST',
-                                                url: "control/insertCustomer.php",
+                                                url: "control/insertPackage.php",
                                                 data: data,
                                                 dataType: 'json',
                                                 timeout: 60000,
                                                 success: function (data, textStatus, jqXHR) {
                                                     if (data.valid) {
                                                         alert(data.msg);
-                                                        $('#customerModal').modal('hide');
+                                                        $('#packModal').modal('hide');
                                                         s_clear();
                                                         loadStaff();
                                                     } else {
@@ -258,7 +261,7 @@ if (!isset($_SESSION["email"])) {
                                     function loadStaff() {
                                         $.ajax({
                                             type: 'POST',
-                                            url: "control/tableCustomer.php",
+                                            url: "control/tablePackage.php",
                                             timeout: 60000,
                                             success: function (data, textStatus, jqXHR) {
                                                 $('#tableDiv').html(data);
@@ -270,50 +273,48 @@ if (!isset($_SESSION["email"])) {
                                     }
 
                                     function s_clear() {
-                                        $('#customerForm')[0].reset();
+                                        $('#packForm')[0].reset();
                                     }
 
                                     $('#tableDiv').on('click', '#s_btnUpdateModal', function () {
                                         $('.update_save_btn').hide();
                                         $('#s_divUpdate').show();
+                                        $('#pack_cd').prop("disabled", true);
                                         var hiden = $(this).closest('td').find('#s_obj').val();
                                         var obj = JSON.parse(hiden);
 
-                                        $('#s_modalID').val(obj.matric);
-                                        $('#s_name').val(obj.name);
-                                        $('#s_email').val(obj.email);
-                                        $('#s_phone').val(obj.phone);
-                                        $('#s_address').val(obj.address);
-                                        $('#s_matric').val(obj.matric);
-
-                                        $('#customerModal').modal('show');
-
+                                        $('#pack_cd').val(obj.pack_cd);
+                                        $('#pack_name').val(obj.name);
+                                        $('#pack_price').val(obj.price);
+                                        $('#pack_status').val(obj.status);
+                                        $('#pack_days').val(obj.days);
+                                        
+                                        $('#packModal').modal('show');
 
                                     });
 
                                     $('#btnUpdateStaff').on('click', function () {
-                                        if (!$('#customerForm')[0].checkValidity()) {
-                                            $('<input type="submit">').hide().appendTo('#customerForm').click().remove();
+                                        if (!$('#packForm')[0].checkValidity()) {
+                                            $('<input type="submit">').hide().appendTo('#packForm').click().remove();
                                         } else {
                                             var data = {
-                                                name: $('#s_name').val(),
-                                                email: $('#s_email').val(),
-                                                phone: $('#s_phone').val(),
-                                                address: $('#s_address').val(),
-                                                matric: $('#s_matric').val(),
-                                                id: $('#s_modalID').val()
+                                                pack_cd: $('#pack_cd').val(),
+                                                pack_name: $('#pack_name').val(),
+                                                pack_price: $('#pack_price').val(),
+                                                status: $('#pack_status').val(),
+                                                days: $('#pack_days').val()
                                             };
 
                                             $.ajax({
                                                 type: 'POST',
-                                                url: "control/updateCustomer.php",
+                                                url: "control/updatePackage.php",
                                                 data: data,
                                                 dataType: 'json',
                                                 timeout: 60000,
                                                 success: function (data, textStatus, jqXHR) {
                                                     if (data.valid) {
                                                         alert(data.msg);
-                                                        $('#customerModal').modal('hide');
+                                                        $('#packModal').modal('hide');
                                                         s_clear();
                                                         loadStaff();
                                                     } else {
@@ -331,16 +332,16 @@ if (!isset($_SESSION["email"])) {
                                         var hiden = $(this).closest('td').find('#s_obj').val();
                                         var obj = JSON.parse(hiden);
 
-                                        var yes = confirm("Are you sure you want to delete customer " + obj.name);
+                                        var yes = confirm("Are you sure you want to delete package " + obj.name);
 
                                         if (yes) {
                                             var data = {
-                                                id: obj.matric
+                                                id: obj.pack_cd
                                             };
 
                                             $.ajax({
                                                 type: 'POST',
-                                                url: "control/deleteCustomer.php",
+                                                url: "control/deletePackage.php",
                                                 data: data,
                                                 dataType: 'json',
                                                 timeout: 60000,

@@ -212,6 +212,7 @@ if (!isset($_SESSION["email"])) {
                                         $('#bicycleModal').modal('show');
                                         $('.update_save_btn').hide();
                                         $('#s_divSave').show();
+                                        s_clear();
                                     });
 
                                     $('#btnSaveStaff').on('click', function () {

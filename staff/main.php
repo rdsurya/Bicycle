@@ -214,6 +214,7 @@ if (!isset($_SESSION["email"])) {
                 $('#staffModal').modal('show');
                 $('.update_save_btn').hide();
                 $('#s_divSave').show();
+                s_clear();
             });
 
             $('#btnSaveStaff').on('click', function () {
