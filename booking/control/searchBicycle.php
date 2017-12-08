@@ -1,7 +1,7 @@
 <?php
 require '../../class/connect2.php';
 
-$sql="Select bicycleID as value, model as name from bicycle;";
+$sql="Select bicycleID as value, model as name from bicycle where status='Available';";
 $result = mysqli_query($con, $sql);
 
 if(mysqli_num_rows($result)>0){

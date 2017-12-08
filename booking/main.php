@@ -28,6 +28,7 @@ if (!isset($_SESSION["email"])) {
         <link href="../assets/css/dataTables.bootstrap.min.css" rel='stylesheet' type='text/css' />
         <link href="../assets/css/buttons.bootstrap.min.css" rel='stylesheet' type='text/css' />
         <link href="../assets/css/jquery.flexdatalist.min.css" rel='stylesheet' type='text/css' />
+        <link href="../assets/css/jquery.datetimepicker.css" rel='stylesheet' type='text/css' />
         <!-- Custom Theme files -->
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -77,7 +78,7 @@ if (!isset($_SESSION["email"])) {
             <div class="container">
                 <div class="header">
                     <div class="logo">
-                        <a href="../entrance/home.php"><img src="../assets/images/logo.png" alt=""/></a><br/><br/>
+                        <a href="../entrance/home.php"><img src="../assets/images/UTeM_s.png" alt=""/></a><br/><br/>
                         <h3 style="text-align: center; color:white;">Welcome,<br/><?= $_SESSION["name"] ?></h3>
                     </div>							 
                     <!--top menu here-->
@@ -119,7 +120,7 @@ if (!isset($_SESSION["email"])) {
         <!---->
 
         <!-- Add Modal Start -->
-        <div class="modal fade" id="customerModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+        <div class="modal fade" id="bookingModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -129,7 +130,7 @@ if (!isset($_SESSION["email"])) {
                     <div class="modal-body">
 
                         <!-- content goes here -->
-                        <form class="form-horizontal" id="customerForm">
+                        <form class="form-horizontal" id="bookingForm">
                             <input type="hidden" id="s_modalID">
 
                             <!-- Text input-->
@@ -164,6 +165,16 @@ if (!isset($_SESSION["email"])) {
                                 </div>
                             </div>
 
+                            <!-- Select Basic -->
+                            <div class="form-group">
+                                <label class="col-md-4 control-label" for="selectbasic">Package</label>
+                                <div class="col-md-4">
+                                    <select id="package" name="selectbasic" class="form-control">
+
+                                    </select>
+                                </div>
+                            </div>
+
                             <!-- Password input-->
                             <div class="form-group">
                                 <label class="col-md-4 control-label" for="passwordinput">Price (RM)</label>
@@ -171,7 +182,10 @@ if (!isset($_SESSION["email"])) {
                                     <input id="price" type="number" placeholder="Enter booking price" class="form-control input-md" required min="0" max="9999.99" step="0.01">
                                 </div>
                             </div>
+                            
+                        </form>
 
+                        <form id="bookingForm2" class="form-horizontal update_save_btn">
                             <!-- Select Basic -->
                             <div class="form-group">
                                 <label class="col-md-4 control-label" for="selectbasic">Status</label>
@@ -184,7 +198,22 @@ if (!isset($_SESSION["email"])) {
                                     </select>
                                 </div>
                             </div>
-
+                            
+                            <!-- Text input-->
+                            <div class="form-group">
+                                <label class="col-md-4 control-label" for="passwordinput">Fine (RM)</label>
+                                <div class="col-md-6">
+                                    <input id="fine" type="number" placeholder="Enter fine charge if any..." class="form-control input-md" min="0" max="9999.99" step="0.01">
+                                </div>
+                            </div>
+                            
+                            <!-- Text input-->
+                            <div class="form-group">
+                                <label class="col-md-4 control-label" for="passwordinput">Fine Reason</label>
+                                <div class="col-md-6">
+                                    <textarea id="fineReason" placeholder="Enter the fine reason" class="form-control input-md" maxlength="220"></textarea>
+                                </div>
+                            </div>
 
                         </form>
                         <div class="text-center">
@@ -220,14 +249,14 @@ if (!isset($_SESSION["email"])) {
         <script type="text/javascript" src="../assets/js/pdfmake.min.js"></script>
         <script type="text/javascript" src="../assets/js/vfs_fonts.js"></script>
         <script type="text/javascript" src="../assets/js/jquery.flexdatalist.min.js"></script>
+        <script type="text/javascript" src="../assets/js/jquery.datetimepicker.full.min.js"></script>
 
         <script>
 
                                     $(function () {
                                         loadStaff();
-
+                                        getPackList();
                                     });
-
                                     //---------------------- init flex datalist
                                     function initFlexSearch(elemID, url, value) {
                                         $(elemID).flexdatalist('destroy');
@@ -243,36 +272,96 @@ if (!isset($_SESSION["email"])) {
                                         });
                                     }
 
-                                    $('#btnAddModal').on('click', function () {
-                                        $('#customerModal').modal('show');
-                                        $('.update_save_btn').hide();
-                                        $('#s_divSave').show();
-                                        initFlexSearch("#customerNo", "control/searchCustomer.php", "");
-                                        initFlexSearch("#bicycleNo", "control/searchBicycle.php", "");
+                                    //-------------- init dateTimePicker
+                                    $('#startDate').datetimepicker({
+                                        format: 'Y-m-d H:i',
+                                        step: 5,
+                                        timepicker: true
+                                    });
+                                    $('#endDate').datetimepicker({
+                                        format: 'Y-m-d H:i',
+                                        step: 5,
+                                        timepicker: true
                                     });
 
+                                    $('#startDate').on('change', function () {
+                                        if ($('#endDate').val() && $('#startDate').val()) {
+                                            var start = Date.parse($('#startDate').val()); //$('#startDate').datetimepicker('getValue');
+                                            var end = Date.parse($('#endDate').val());//$('#endDate').datetimepicker('getValue');
+                                            console.log("start:" + start + " end:" + end);
+                                            if (start >= end) {
+                                                alert("Start date must be earlier than end date!");
+                                                $('#startDate').val('');
+                                                return false;
+                                            } else {
+                                                calculatePrice();
+                                            }
+                                        }
+                                    });
+
+                                    $('#endDate').on('change', function () {
+                                        if ($('#startDate').val() && $('#endDate').val()) {
+                                            var start = Date.parse($('#startDate').val()); //$('#startDate').datetimepicker('getValue');
+                                            var end = Date.parse($('#endDate').val());//$('#endDate').datetimepicker('getValue');
+                                            console.log("start:" + start + " end:" + end);
+                                            if (start >= end) {
+                                                alert("End date must be later than start date!");
+                                                $('#endDate').val('');
+                                                return false;
+                                            } else {
+                                                calculatePrice();
+                                            }
+                                        }
+                                    });
+
+                                    $('#package').on('change', function () {
+                                        calculatePrice();
+                                    });
+
+                                    function getPackList() {
+                                        $.ajax({
+                                            type: 'POST',
+                                            url: "control/getListOfPackage.php",
+                                            timeout: 60000,
+                                            success: function (data, textStatus, jqXHR) {
+                                                $('#package').html(data);
+                                            }
+                                        });
+                                    }
+
+                                    $('#btnAddModal').on('click', function () {
+                                        s_clear();
+                                        $('#bookingModal').modal('show');
+                                        $('.update_save_btn').hide();
+                                        $('#s_divSave').show();
+                                        $('#bookingForm .form-control').prop("disabled", false);
+                                        initFlexSearch("#customerNo", "control/searchCustomer.php", "");
+                                        initFlexSearch("#bicycleNo", "control/searchBicycle.php", "");
+                                        
+                                    });
                                     $('#btnSaveStaff').on('click', function () {
-                                        if (!$('#customerForm')[0].checkValidity()) {
-                                            $('<input type="submit">').hide().appendTo('#customerForm').click().remove();
+                                        if (!$('#bookingForm')[0].checkValidity()) {
+                                            $('<input type="submit">').hide().appendTo('#bookingForm').click().remove();
                                         } else {
                                             var data = {
-                                                name: $('#s_name').val(),
-                                                email: $('#s_email').val(),
-                                                phone: $('#s_phone').val(),
-                                                address: $('#s_address').val(),
-                                                matric: $('#s_matric').val()
+                                                customer: $('#customerNo').val(),
+                                                bicycle: $('#bicycleNo').val(),
+                                                startDate: $('#startDate').val(),
+                                                endDate: $('#endDate').val(),
+                                                package: $('#package').val(),
+                                                price: $('#price').val()
                                             };
-
                                             $.ajax({
                                                 type: 'POST',
-                                                url: "control/insertCustomer.php",
+                                                url: "control/insertBooking.php",
                                                 data: data,
                                                 dataType: 'json',
                                                 timeout: 60000,
                                                 success: function (data, textStatus, jqXHR) {
+//                                                    console.log(data);
                                                     if (data.valid) {
                                                         alert(data.msg);
-                                                        $('#customerModal').modal('hide');
+                                                        $('#bookingModal').modal('hide');
                                                         s_clear();
                                                         loadStaff();
                                                     } else {
@@ -285,11 +374,10 @@ if (!isset($_SESSION["email"])) {
                                             });
                                         }
                                     });
-
                                     function loadStaff() {
                                         $.ajax({
                                             type: 'POST',
-                                            url: "control/tableCustomer.php",
+                                            url: "control/tableBooking.php",
                                             timeout: 60000,
                                             success: function (data, textStatus, jqXHR) {
                                                 $('#tableDiv').html(data);
@@ -301,50 +389,51 @@ if (!isset($_SESSION["email"])) {
                                     }
 
                                     function s_clear() {
-                                        $('#customerForm')[0].reset();
+                                        $('#bookingForm')[0].reset();
+                                        $('#bookingForm2')[0].reset();
                                     }
 
                                     $('#tableDiv').on('click', '#s_btnUpdateModal', function () {
                                         $('.update_save_btn').hide();
                                         $('#s_divUpdate').show();
+                                        $('#bookingForm2').show();
+                                        $('#bookingForm .form-control').prop("disabled", true);
                                         var hiden = $(this).closest('td').find('#s_obj').val();
                                         var obj = JSON.parse(hiden);
-
-                                        $('#s_modalID').val(obj.matric);
-                                        $('#s_name').val(obj.name);
-                                        $('#s_email').val(obj.email);
-                                        $('#s_phone').val(obj.phone);
-                                        $('#s_address').val(obj.address);
-                                        $('#s_matric').val(obj.matric);
-
-                                        $('#customerModal').modal('show');
-
-
+                                        $('#s_modalID').val(obj.booking_no);
+                                        initFlexSearch("#customerNo", "control/searchCustomer.php", obj.customer_no);
+                                        initFlexSearch("#bicycleNo", "control/searchBicycle.php", obj.bicycle_no);
+                                        $('#startDate').val(obj.startDate);
+                                        $('#endDate').val(obj.endDate);
+                                        $('#price').val(obj.price);
+                                        $('#status').val(obj.status);
+                                        $('#fine').val(obj.fine);
+                                        $('#fine_reason').val(obj.fine_reason);
+                                        
+                                        $('#bookingModal').modal('show');
+                                        
                                     });
-
                                     $('#btnUpdateStaff').on('click', function () {
-                                        if (!$('#customerForm')[0].checkValidity()) {
-                                            $('<input type="submit">').hide().appendTo('#customerForm').click().remove();
+                                        if (!$('#bookingForm2')[0].checkValidity()) {
+                                            $('<input type="submit">').hide().appendTo('#bookingForm2').click().remove();
                                         } else {
                                             var data = {
-                                                name: $('#s_name').val(),
-                                                email: $('#s_email').val(),
-                                                phone: $('#s_phone').val(),
-                                                address: $('#s_address').val(),
-                                                matric: $('#s_matric').val(),
-                                                id: $('#s_modalID').val()
+                                                id: $('#s_modalID').val(),
+                                                fine: $('#fine').val(),
+                                                fine_reason: $('#fineReason').val(),
+                                                status: $('#status').val(),
+                                                bike: $('#bicycleNo').val()
                                             };
-
                                             $.ajax({
                                                 type: 'POST',
-                                                url: "control/updateCustomer.php",
+                                                url: "control/updateBooking.php",
                                                 data: data,
                                                 dataType: 'json',
                                                 timeout: 60000,
                                                 success: function (data, textStatus, jqXHR) {
                                                     if (data.valid) {
                                                         alert(data.msg);
-                                                        $('#customerModal').modal('hide');
+                                                        $('#bookingModal').modal('hide');
                                                         s_clear();
                                                         loadStaff();
                                                     } else {
@@ -357,21 +446,19 @@ if (!isset($_SESSION["email"])) {
                                             });
                                         }
                                     });
-
                                     $('#tableDiv').on('click', '#s_btnDelete', function () {
                                         var hiden = $(this).closest('td').find('#s_obj').val();
                                         var obj = JSON.parse(hiden);
-
-                                        var yes = confirm("Are you sure you want to delete customer " + obj.name);
-
+                                        var yes = confirm("Are you sure you want to delete booking record " + obj.booking_no +" for customer "+obj.name +"?");
                                         if (yes) {
                                             var data = {
-                                                id: obj.matric
+                                                id: obj.booking_no,
+                                                status: obj.status,
+                                                bike: obj.bicycle_no
                                             };
-
                                             $.ajax({
                                                 type: 'POST',
-                                                url: "control/deleteCustomer.php",
+                                                url: "control/deleteBooking.php",
                                                 data: data,
                                                 dataType: 'json',
                                                 timeout: 60000,
@@ -389,17 +476,43 @@ if (!isset($_SESSION["email"])) {
                                             });
                                         }
                                     });
-
                                     //-------------- function to calculate duration in days between two dates
                                     function treatAsUTC(date) {
-                                        var result = new Date(date);
+                                        var result = date;//new Date(date);
                                         result.setMinutes(result.getMinutes() - result.getTimezoneOffset());
                                         return result;
                                     }
 
                                     function daysBetween(startDate, endDate) {
                                         var millisecondsPerDay = 24 * 60 * 60 * 1000;
-                                        return (treatAsUTC(endDate) - treatAsUTC(startDate)) / millisecondsPerDay;
+                                        var x = (treatAsUTC(endDate) - treatAsUTC(startDate)) / millisecondsPerDay;
+                                        
+                                        var y = Math.ceil(x);
+                                        
+                                         return y;
+                                    }
+
+                                    function calculatePrice() {
+                                        //get days of rent
+                                        //get package days unit
+                                        //x = days of rent / days unit, round up
+                                        // price = x * package price
+                                        if ($('#endDate').val() && $('#startDate').val() && $('#package').val()) {
+
+                                            var rentDays = daysBetween($('#startDate').datetimepicker('getValue'), $('#endDate').datetimepicker('getValue'));
+                                            var json = $('#package').val();
+                                            console.log(json);
+                                            var objP = JSON.parse(json);
+                                            var dayUnit = objP.days;
+                                            var x = Math.ceil((rentDays / dayUnit));
+                                            var price = x * objP.price;
+
+                                            $('#price').val(price);
+
+                                        } else {
+                                            return false;
+                                        }
+
                                     }
 
                                     //alert(daysBetween($('#first').val(), $('#second').val()));

@@ -77,7 +77,7 @@ if (!isset($_SESSION["email"])) {
             <div class="container">
                 <div class="header">
                     <div class="logo">
-                        <a href="../entrance/home.php"><img src="../assets/images/logo.png" alt=""/></a><br/><br/>
+                        <a href="../entrance/home.php"><img src="../assets/images/UTeM_s.png" alt=""/></a><br/><br/>
                         <h3 style="text-align: center; color:white;">Welcome,<br/><?= $_SESSION["name"] ?></h3>
                     </div>							 
                     <!--top menu here-->
